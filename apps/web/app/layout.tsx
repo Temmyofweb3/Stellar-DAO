@@ -4,6 +4,7 @@ import { Inter, JetBrains_Mono } from 'next/font/google';
 import './globals.css';
 
 import { Providers } from './providers';
+
 import { TopNav } from '@/components/nav/top-nav';
 
 const inter = Inter({ subsets: ['latin'], variable: '--font-inter' });

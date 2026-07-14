@@ -10,7 +10,6 @@
  *     operator health) into the same stream.
  */
 import type { FastifyInstance } from 'fastify';
-
 import { parseEnv } from '@stellardao/shared';
 import { HorizonClient } from '@stellardao/sdk';
 

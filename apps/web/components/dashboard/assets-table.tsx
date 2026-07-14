@@ -1,8 +1,8 @@
 import Link from 'next/link';
+import { chainLabel, type AssetRegistryEntry } from '@stellardao/shared';
 
 import { ChainBadge } from '@/components/atoms/chain-badge';
 import { AddressDisplay } from '@/components/atoms/address-display';
-import { chainLabel, type AssetRegistryEntry } from '@stellardao/shared';
 
 export const AssetsTable = ({ assets }: { assets: AssetRegistryEntry[] }) => {
   if (assets.length === 0) {

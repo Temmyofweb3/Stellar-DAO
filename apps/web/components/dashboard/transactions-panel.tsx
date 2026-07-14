@@ -1,10 +1,10 @@
 'use client';
 
 import { useMemo, useState } from 'react';
-
 import { StatusDot } from '@stellardao/ui';
-import { ChainBadge } from '@/components/atoms/chain-badge';
 import { SOURCE_CHAINS, type Transaction, type TxStatus } from '@stellardao/shared';
+
+import { ChainBadge } from '@/components/atoms/chain-badge';
 
 const statusFilters: TxStatus[] = ['pending', 'attesting', 'minting', 'completed', 'failed', 'refunded'];
 

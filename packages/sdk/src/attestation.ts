@@ -9,9 +9,9 @@
  * tsconfig even though they're valid runtime paths.
  */
 import { Buffer } from 'node:buffer';
+
 import { sha256 } from '@noble/hashes/sha256';
 import { secp256k1 } from '@noble/curves/secp256k1';
-
 import type { LockPayload, UnlockPayload } from '@stellardao/shared';
 import { SIGNATURE_TAGS } from '@stellardao/shared';
 

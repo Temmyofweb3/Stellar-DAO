@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 
 import { WalletConnect } from './wallet-connect';
+
 import { LogoMark } from '@/components/atoms/logo-mark';
 
 const navItems = [

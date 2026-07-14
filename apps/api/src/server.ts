@@ -15,7 +15,6 @@ import cors from '@fastify/cors';
 import helmet from '@fastify/helmet';
 import sensible from '@fastify/sensible';
 import { Keypair } from '@stellar/stellar-sdk';
-
 import { parseEnv } from '@stellardao/shared';
 
 import { assetRoutes } from './routes/assets.js';

@@ -1,5 +1,4 @@
 import type { Keypair } from '@stellar/stellar-sdk';
-
 import type { SignedAttestation, LockPayload, UnlockPayload } from '@stellardao/shared';
 import { BridgeContract, FactoryContract, WrapperTokenContract } from '@stellardao/sdk';
 

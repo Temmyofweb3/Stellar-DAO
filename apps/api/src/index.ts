@@ -1,10 +1,8 @@
 import Fastify from 'fastify';
-
 import cors from '@fastify/cors';
 import helmet from '@fastify/helmet';
 import sensible from '@fastify/sensible';
 import { Keypair } from '@stellar/stellar-sdk';
-
 import { parseEnv } from '@stellardao/shared';
 
 import { assetRoutes } from './routes/assets.js';
@@ -63,6 +61,11 @@ await registerSseBridge(app);
 const shutdown = async (signal: string) => {
   app.log.info({ signal }, 'shutting down');
   await app.close();
+  // `process.exit(0)` is intentional here — the SIGINT/SIGTERM handler
+  // is the explicit termination point. The `no-process-exit` lint rule
+  // is too aggressive for a long-running server's signal handlers, so
+  // we explicitly opt out for this single line.
+  // eslint-disable-next-line no-process-exit
   process.exit(0);
 };
 process.on('SIGINT', () => shutdown('SIGINT'));
@@ -70,8 +73,11 @@ process.on('SIGTERM', () => shutdown('SIGTERM'));
 
 app.listen({ port: env.API_PORT, host: '0.0.0.0' }, (err, address) => {
   if (err) {
+    // Surface the bind error to whoever started the process. Throwing is
+    // the lint-preferred path (`no-process-exit`) — the Node.js entrypoint
+    // already prints the uncaught rejection and exits with code 1.
     app.log.error(err);
-    process.exit(1);
+    throw err;
   }
   app.log.info(`StellarDAO API listening at ${address}`);
 });

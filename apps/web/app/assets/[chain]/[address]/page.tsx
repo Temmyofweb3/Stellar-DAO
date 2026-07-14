@@ -1,11 +1,11 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
+import { SOURCE_CHAINS, chainLabel } from '@stellardao/shared';
 
 import { ChainBadge } from '@/components/atoms/chain-badge';
 import { AddressDisplay } from '@/components/atoms/address-display';
 import { EventStreamPanel } from '@/components/dashboard/event-stream-panel';
-import { SOURCE_CHAINS, chainLabel } from '@stellardao/shared';
 import { serverApi } from '@/lib/server-api';
 
 type Params = { chain: string; address: string };

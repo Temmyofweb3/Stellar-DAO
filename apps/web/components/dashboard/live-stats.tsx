@@ -1,7 +1,6 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-
 import type { HealthResponse } from '@stellardao/shared';
 
 export const LiveStats = ({ initial }: { initial: HealthResponse | null }) => {

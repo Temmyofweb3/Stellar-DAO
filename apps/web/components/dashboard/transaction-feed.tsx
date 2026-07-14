@@ -1,11 +1,11 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-
 import { StatusDot } from '@stellardao/ui';
+import type { Transaction } from '@stellardao/shared';
+
 import { ChainBadge } from '@/components/atoms/chain-badge';
 import { AddressDisplay } from '@/components/atoms/address-display';
-import type { Transaction } from '@stellardao/shared';
 
 export const TransactionFeed = ({ initial }: { initial: Transaction[] }) => {
   const [items, setItems] = useState<Transaction[]>(initial);

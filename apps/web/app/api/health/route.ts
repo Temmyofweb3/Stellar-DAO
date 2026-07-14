@@ -1,5 +1,4 @@
 import { NextResponse } from 'next/server';
-
 import { parseEnv } from '@stellardao/shared';
 
 export const revalidate = 30;

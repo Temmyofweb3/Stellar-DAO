@@ -1,6 +1,5 @@
 import type { FastifyInstance } from 'fastify';
 import type { HealthResponse } from '@stellardao/shared';
-
 import { parseEnv } from '@stellardao/shared';
 import { HorizonClient } from '@stellardao/sdk';
 
