@@ -8,7 +8,7 @@
 //! Responsibilities:
 //!   * Store the address of the wrapper-token template (the "blueprint").
 //!   * Clone the template for each new `(source_chain, source_token)` pair
-//!     using Soroban's `Deployer::with_current_contract(...)`.
+//!     using Soroban's `Deployer::with_address(...)`.
 //!   * Initialize each clone with the configured bridge as the sole minter/burner.
 //!   * Maintain a `Map<DataKey, Address>` registry so lookup operations from
 //!     the API layer are O(1) and the relayer never has to trust an
@@ -16,7 +16,7 @@
 
 use soroban_sdk::{
     contract, contractimpl, contracttype, panic_with_error, vec, Address, Bytes, BytesN, Env,
-    IntoVal, Symbol, Vec,
+    IntoVal, Symbol, Val, Vec,
 };
 
 mod error;
@@ -132,41 +132,38 @@ impl Factory {
             .get(&DataKey::Bridge)
             .unwrap_or_else(|| panic_with_error!(env, FactoryError::NotInitialized));
 
-        // Clone the wrapper-token template. Soroban `with_current_contract`
-        // emits a `contract_id` derived from `(caller, salt)` — relying on
-        // `caller` + a length-tagged salt ensures deterministic addresses
-        // for the same input.
+        // Clone the wrapper-token template. `Deployer::with_address` emits
+        // a `contract_id` derived from `(template, salt)` — relying on
+        // `template` + a length-tagged salt ensures deterministic addresses
+        // for the same input. The 5-arg `initialize(admin, bridge, name,
+        // symbol, decimals)` is passed directly to `deploy` so the new
+        // contract is initialised atomically — without this, a malicious
+        // caller could front-run the factory and call `initialize` first.
+        // `admin == bridge` because the wrapper-token exposes no admin-only
+        // methods today; rotate both together via a new factory deployment.
         let salt = Self::build_salt(&env, &source_chain, &source_token);
-        let new_addr = env
-            .deployer()
-            .with_current_contract(template.clone())
-            .deploy_v2(salt, vec![&env]);
-
-        // Initialize the wrapper-token with admin=bridge. The bridge is the
-        // single source of mint/burn authority.
-        let init_args = vec![
+        let constructor_args: Vec<Val> = vec![
             &env,
-            bridge.clone().into_val(&env),
-            bridge.into_val(&env),
-            name.clone().into_val(&env),
-            symbol.clone().into_val(&env),
+            bridge.into_val(&env), // admin (== bridge; see comment above)
+            bridge.into_val(&env), // mint/burn authority
+            name.into_val(&env),
+            symbol.into_val(&env),
             decimals.into_val(&env),
         ];
+        let new_addr = env
+            .deployer()
+            .with_address(template, salt)
+            .deploy(constructor_args);
 
-        env.invoke_contract::<()>(&new_addr, &Symbol::new(&env, "initialize"), init_args);
-
+        // Persist the registry entry and emit the indexer event. (The
+        // wrapper-token is now fully initialised — no separate
+        // `invoke_contract` call needed, so the front-run window above is
+        // closed.)
         env.storage().persistent().set(&key, &new_addr);
 
         env.events().publish(
             (Symbol::new(&env, "factory"), Symbol::new(&env, "WrapperCreated")),
-            (
-                source_chain.clone(),
-                source_token.clone(),
-                new_addr.clone(),
-                name.clone(),
-                symbol.clone(),
-                decimals,
-            ),
+            (source_chain, source_token, new_addr, name, symbol, decimals),
         );
 
         new_addr
@@ -190,6 +187,6 @@ impl Factory {
         buf.extend_from_slice(b"STELLARDAO_FACTORY_V1");
         buf.extend_from_slice(source_chain.clone().into_val(env).serialize(env).as_slice());
         buf.extend_from_slice(source_token.as_slice());
-        env.crypto().sha256(&buf).into()
+        env.crypto().sha256(&buf)
     }
 }

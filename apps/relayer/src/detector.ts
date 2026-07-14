@@ -1,6 +1,6 @@
 import pino from 'pino';
-
 import type { SourceChainId } from '@stellardao/shared';
+
 import type { LockEvent } from './sources/types.js';
 
 const log = pino({ transport: { target: 'pino-pretty' } });

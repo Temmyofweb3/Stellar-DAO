@@ -27,12 +27,13 @@ export const assetRoutes = async (app: FastifyInstance): Promise<void> => {
   app.get('/', async (): Promise<ListAssetsResponse> => {
     const assets = await assetRepository.listAll();
     return {
-      assets: assets.map(({ wrapperToken, source, symbol, name, decimals }) => ({
-        wrapperToken,
-        source,
-        symbol,
-        name,
-        decimals,
+      assets: assets.map((entry) => ({
+        id: entry.id,
+        source: entry.source,
+        wrapperToken: entry.wrapperToken,
+        symbol: entry.symbol,
+        name: entry.name,
+        decimals: entry.decimals,
       })),
     };
   });

@@ -15,6 +15,7 @@ export type CreateAssetResponse = {
 
 export type ListAssetsResponse = {
   assets: Array<{
+    id: string;
     source: AssetId;
     wrapperToken: string;
     symbol: string;

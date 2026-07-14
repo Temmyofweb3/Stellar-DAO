@@ -1,7 +1,6 @@
 import pino from 'pino';
 import type { Keypair } from '@stellar/stellar-sdk';
-
-import { BridgeContract } from '@stellardao/sdk';
+import type { BridgeContract } from '@stellardao/sdk';
 import type { LockPayload, SignedAttestation } from '@stellardao/shared';
 
 const log = pino({ transport: { target: 'pino-pretty' } });

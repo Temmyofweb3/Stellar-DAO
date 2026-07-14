@@ -3,6 +3,12 @@ import { NextResponse } from 'next/server';
 import { parseEnv } from '@stellardao/shared';
 
 export const revalidate = 30;
+// Force dynamic rendering so Next.js doesn't try to prerender this route
+// at build time — `parseEnv.web()` reads `process.env.NEXT_PUBLIC_*` which
+// aren't set during `next build`, and prerendering would fail with a zod
+// validation error. `force-dynamic` opts the route out of the static
+// optimisation pipeline.
+export const dynamic = 'force-dynamic';
 
 export async function GET() {
   const env = parseEnv.web();

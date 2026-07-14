@@ -1,6 +1,6 @@
 import { chainLabel, type SourceChainId } from '@stellardao/shared';
 
-const colorByChain: Record<SourceChainId, string> = {
+const colorByChain: Record<SourceChainId | 'stellar', string> = {
   ethereum: 'from-indigo-400 to-blue-500 text-white',
   solana: 'from-fuchsia-400 to-purple-600 text-white',
   polygon: 'from-rose-400 to-orange-400 text-white',

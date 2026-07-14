@@ -153,7 +153,7 @@ impl WrapperToken {
     }
 
     pub fn transfer(env: Env, from: Address, to: Address, amount: i128) {
-        from.require_auth()?;
+        from.require_auth();
 
         let from_balance = Self::balance(env.clone(), from.clone())
             .checked_sub(amount)
@@ -172,7 +172,7 @@ impl WrapperToken {
     }
 
     pub fn approve(env: Env, owner: Address, spender: Address, amount: i128, expiration_ledger: u32) {
-        owner.require_auth()?;
+        owner.require_auth();
 
         env.storage()
             .persistent()
@@ -188,7 +188,7 @@ impl WrapperToken {
     }
 
     pub fn transfer_from(env: Env, spender: Address, from: Address, to: Address, amount: i128) {
-        spender.require_auth()?;
+        spender.require_auth();
 
         let expiry: u32 = env
             .storage()

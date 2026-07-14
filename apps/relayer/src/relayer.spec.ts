@@ -1,8 +1,8 @@
 import { describe, expect, it } from 'vitest';
 import { Keypair } from '@stellar/stellar-sdk';
 import { secp256k1 } from '@noble/curves/secp256k1';
-
 import { buildLockDigest, signSecp256k1, verifySecp256k1 } from '@stellardao/sdk';
+
 import { eventQueue } from './state/event-queue.js';
 
 describe('buildLockDigest + sign + verify (round-trip)', () => {

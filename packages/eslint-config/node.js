@@ -1,6 +1,11 @@
+import tseslint from 'typescript-eslint';
+
 import base from './index.js';
 
-export default [
+// The node preset just inherits the base + adds Node.js globals + turns
+// off `no-console`. No third-party plugins are imported here, so there
+// is no `__esModule` interop strip needed.
+export default tseslint.config(
   ...base,
   {
     files: ['**/*.ts'],
@@ -19,4 +24,4 @@ export default [
       'no-process-exit': 'warn',
     },
   },
-];
+);

@@ -16,8 +16,20 @@ keywords = ["stellar", "soroban", "cross-chain", "defi"]
 categories = ["cryptography::cryptocurrencies"]
 
 [workspace.dependencies]
-soroban-sdk = { version = "22.0.0" }
-soroban-token-sdk = { version = "22.0.0" }
+# Pin to `soroban-sdk` 21.7.7 (the final 21.x release). Earlier soroban-
+# sdk 22.x bumped the `soroban-env-host` chain to `ed25519-dalek` v3
+# alongside `rand_chacha` v0.3 (still on `rand_core` v0.6) — the two
+# `CryptoRng` traits live in different `rand_core` versions, so Cargo
+# rejects the trait-bound mismatch in `ChaCha20Rng: ed25519_dalek::
+# rand_core::CryptoRng`. 21.7.7 is the last release whose transitive
+# deps use `ed25519-dalek` v2 / `rand_core` v0.6 and compiles cleanly
+# against the bridge/factory/wrapper-token contracts in this scaffold.
+# We also pin to `=21.7.7` (exact, not caret) because the contract
+# source uses the pre-22 API surface (`env.crypto().sha256()` returning
+# `BytesN<32>` directly, single-arg `authorize_as_current_contract`,
+# `IntoVal` trait) and any 22.x bump would trigger ~22 compile errors.
+soroban-sdk = { version = "=21.7.7" }
+soroban-token-sdk = { version = "=21.7.7" }
 
 [profile.release]
 opt-level = "z"

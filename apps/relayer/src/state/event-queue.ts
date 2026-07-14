@@ -1,4 +1,4 @@
-import type { TxStatus, Transaction } from '@stellardao/shared';
+import type { Transaction } from '@stellardao/shared';
 
 /**
  * Input shape for `eventQueue.push`.

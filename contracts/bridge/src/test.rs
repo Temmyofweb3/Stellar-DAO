@@ -96,7 +96,7 @@ fn mint_rejects_replay_of_nonce() {
             &relayer,
             &wrapper,
             &payload,
-            &vec![&env],
+            &Vec::<(BytesN<32>, BytesN<64>)>::new(&env),
         );
     });
     assert!(res.is_err(), "mint call must fail when nonce is consumed");

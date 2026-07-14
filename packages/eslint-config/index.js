@@ -1,16 +1,26 @@
-import tseslint from '@typescript-eslint/eslint-plugin';
-import tsParser from '@typescript-eslint/parser';
+import tseslint from 'typescript-eslint';
 import prettier from 'eslint-config-prettier';
 import importPlugin from 'eslint-plugin-import';
 
-export default [
+// ESLint v9 flat config strictly validates plugin objects — any unknown
+// top-level property throws `Unexpected top-level property "X"`. CJS plugins
+// imported in an ESM context come wrapped with `{ __esModule: true, ... }`
+// from the TS/Babel interop shim, which ESLint v9 rejects. Strip the marker
+// before handing the plugin to ESLint.
+const { __esModule: _ignoredImportInteropMark, ...cleanImportPlugin } =
+  importPlugin;
+void _ignoredImportInteropMark;
+
+// `typescript-eslint.config()` is the recommended helper in v8 — it produces
+// a flat-config array and strips any interop markers from the @typescript-
+// eslint configs internally.
+export default tseslint.config(
   ...tseslint.configs.recommended,
   {
     plugins: {
-      import: importPlugin,
+      import: cleanImportPlugin,
     },
     languageOptions: {
-      parser: tsParser,
       parserOptions: {
         ecmaVersion: 2022,
         sourceType: 'module',
@@ -37,4 +47,4 @@ export default [
     },
   },
   prettier,
-];
+);
