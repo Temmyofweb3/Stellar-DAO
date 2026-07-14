@@ -31,6 +31,22 @@ pub trait AttestationVerifier {
 /// .secp256k1_verify(...)` as a host function. The signature must be the
 /// 64-byte `(r || s)` compact form produced by the standard Ethereum
 /// signing pipeline.
+///
+/// Wraps `Secp256k1Verifier::verify` with a stable name so route handlers
+/// in `apps/api/src/routes/bridge.ts` can reference a single concrete
+/// verifier instead of having to know the trait plumbing on
+/// `AttestationVerifier`. NOTE: until the 65-byte signature migration
+/// described in `Secp256k1Verifier::verify` lands, this ALWAYS returns
+/// `false` — guards the bridge from accepting silently-bogus signatures.
+pub fn verify_attestation(
+    env: &Env,
+    public_key: &BytesN<32>,
+    digest: &BytesN<32>,
+    signature: &BytesN<64>,
+) -> bool {
+    Secp256k1Verifier::verify(env, public_key, digest, signature)
+}
+
 pub struct Secp256k1Verifier;
 
 impl AttestationVerifier for Secp256k1Verifier {
