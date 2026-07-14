@@ -1,0 +1,53 @@
+# Contributing
+
+## Pull requests
+
+1. Branch off `main`.
+2. Keep PRs scoped — one feature/concern per PR.
+3. Run before opening a PR:
+
+```bash
+pnpm lint && pnpm typecheck && pnpm test
+cd contracts && cargo build --target wasm32-unknown-unknown --release
+```
+
+4. Add an entry to `CHANGELOG.md` for any user-facing change.
+
+## Coding conventions
+
+- TypeScript: 2-space indent, single quotes, trailing commas, 100 chars
+  wide (`prettier` does this automatically).
+- Rust: `cargo fmt` + `cargo clippy --all-targets -- -D warnings`.
+- Every contract change must include or update a corresponding test
+  in `contracts/<name>/src/test.rs`.
+- The shared types in `packages/shared` are the source of truth: do
+  not duplicate them in `apps/*` or `packages/*`.
+
+## Updating the contracts
+
+The Soroban host function `secp256k1_verify` may be enabled by future
+SDKs. When that lands:
+
+1. Replace the body of `Secp256k1Verifier::verify` in
+   `contracts/bridge/src/verification.rs` with the real call.
+2. Add unit tests for a wrapped `MockVerifier` so we can run
+   threshold checks without standing up Soroban locally.
+3. Bump the workspace version in `contracts/Cargo.toml`.
+
+## Adding a new source chain
+
+1. Add the chain id to `SOURCE_CHAINS` in
+   `packages/shared/src/types/chain.ts`.
+2. Add a watcher under `apps/relayer/src/sources/<chain>.ts` that
+   conforms to `SourceAdapter`.
+3. Register it in `apps/relayer/src/index.ts` under `networkSources`.
+4. Add a gradient color in
+   `apps/web/components/atoms/chain-badge.tsx` so the dashboard
+   surfaces the new chain consistently.
+
+## Adding a new Soroban event topic
+
+The events string lives in Rust as `Symbol::new(&env, "…")` and in
+TypeScript as `Events.<NAME>` in
+`packages/shared/src/constants/index.ts`. Both must be updated
+together or the dashboard's live feed will silently drop the event.

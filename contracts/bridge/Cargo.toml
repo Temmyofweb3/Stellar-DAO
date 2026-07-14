@@ -1,0 +1,17 @@
+[package]
+name = "bridge"
+version.workspace = true
+edition.workspace = true
+authors.workspace = true
+license.workspace = true
+repository.workspace = true
+description = "StellarDAO bridge contract — verifies relayer attestations and routes mint/burn to wrapper-tokens"
+
+[lib]
+crate-type = ["cdylib"]
+
+[dependencies]
+soroban-sdk = { workspace = true }
+
+[dev-dependencies]
+soroban-sdk = { workspace = true, features = ["testutils"] }

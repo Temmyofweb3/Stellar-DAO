@@ -1,0 +1,14 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "outDir": "dist",
+    "rootDir": "src",
+    "baseUrl": ".",
+    "paths": {
+      "@noble/hashes/sha256": ["../../node_modules/@noble/hashes/esm/sha256.d.ts"],
+      "@noble/curves/secp256k1": ["../../node_modules/@noble/curves/esm/secp256k1.d.ts"]
+    }
+  },
+  "include": ["src/**/*"],
+  "exclude": ["dist", "node_modules"]
+}

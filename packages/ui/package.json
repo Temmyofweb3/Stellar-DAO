@@ -1,0 +1,36 @@
+{
+  "name": "@stellardao/ui",
+  "version": "0.1.0",
+  "private": true,
+  "description": "StellarDAO shared React component primitives usable from any Next.js app.",
+  "type": "module",
+  "main": "./src/index.ts",
+  "types": "./src/index.ts",
+  "exports": {
+    ".": "./src/index.ts",
+    "./styles.css": "./src/styles.css"
+  },
+  "scripts": {
+    "lint": "eslint src --ext .ts,.tsx",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "clean": "rm -rf dist .turbo"
+  },
+  "dependencies": {
+    "@stellardao/shared": "workspace:*",
+    "clsx": "^2.1.1",
+    "tailwind-merge": "^2.5.4"
+  },
+  "devDependencies": {
+    "@stellardao/eslint-config": "workspace:*",
+    "@stellardao/tsconfig": "workspace:*",
+    "@types/react": "^18.3.12",
+    "react": "^19.0.0-rc-66855b96-20241106",
+    "typescript": "^5.6.3",
+    "vitest": "^2.1.4"
+  },
+  "peerDependencies": {
+    "react": "^18.0.0 || ^19.0.0",
+    "react-dom": "^18.0.0 || ^19.0.0"
+  }
+}

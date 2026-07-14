@@ -1,0 +1,7 @@
+{
+  "name": "@stellardao/tsconfig",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Shareable tsconfig presets used across the polyrepo.",
+  "files": ["base.json", "node.json", "react.json"]
+}

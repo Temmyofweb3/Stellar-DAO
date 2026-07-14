@@ -1,0 +1,11 @@
+node_modules
+.next
+dist
+build
+target
+.turbo
+contracts/**/target
+packages/soroban-client/src/bindings
+*.lock
+pnpm-lock.yaml
+coverage

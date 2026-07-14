@@ -1,0 +1,27 @@
+[workspace]
+resolver = "2"
+members = [
+    "bridge",
+    "factory",
+    "wrapper-token",
+]
+
+[workspace.package]
+version = "0.1.0"
+edition = "2021"
+authors = ["StellarDAO Contributors"]
+license = "MIT"
+repository = "https://github.com/stellardao/stellardao"
+keywords = ["stellar", "soroban", "cross-chain", "defi"]
+categories = ["cryptography::cryptocurrencies"]
+
+[workspace.dependencies]
+soroban-sdk = { version = "22.0.0" }
+soroban-token-sdk = { version = "22.0.0" }
+
+[profile.release]
+opt-level = "z"
+overflow-checks = true
+debug = false
+strip = true
+lto = true

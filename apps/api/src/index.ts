@@ -1,0 +1,76 @@
+import Fastify, { type FastifyInstance } from 'fastify';
+import cors from '@fastify/cors';
+import helmet from '@fastify/helmet';
+import sensible from '@fastify/sensible';
+import { Keypair } from '@stellar/stellar-sdk';
+
+import { parseEnv } from '@stellardao/shared';
+
+import { assetRoutes } from './routes/assets.js';
+import { bridgeRoutes } from './routes/bridge.js';
+import { healthRoutes } from './routes/health.js';
+import { transactionRoutes } from './routes/transactions.js';
+import { registerSseBridge } from './sse/horizon-bridge.js';
+
+const env = parseEnv.api();
+
+const app = Fastify({
+  logger: {
+    level: process.env.LOG_LEVEL ?? 'info',
+    transport: { target: 'pino-pretty' },
+  },
+});
+
+await app.register(sensible);
+await app.register(helmet);
+await app.register(cors, {
+  origin: process.env.NODE_ENV === 'production' ? false : true,
+});
+
+// Decorate the Fastify instance with the Soroban signing keypair and the
+// network passphrase so route handlers can submit transactions without
+// re-reading env.
+const apiKeypair: Keypair | null = env.RELAYER_SECRET_KEY
+  ? Keypair.fromSecret(env.RELAYER_SECRET_KEY)
+  : null;
+app.decorate(
+  'sorobanSigner',
+  apiKeypair ?? {
+    sign: () => {
+      throw new Error('API_RELAYER_SECRET_KEY not configured — see .env.example');
+    },
+  } as unknown as Keypair,
+);
+app.decorate('networkPassphrase', env.STELLAR_NETWORK_PASSPHRASE);
+app.decorate('sorobanRpcUrl', env.SOROBAN_RPC_URL);
+
+declare module 'fastify' {
+  interface FastifyInstance {
+    sorobanSigner: Keypair;
+    networkPassphrase: string;
+    sorobanRpcUrl: string;
+  }
+}
+
+await app.register(healthRoutes, { prefix: '/health' });
+await app.register(assetRoutes, { prefix: '/assets' });
+await app.register(bridgeRoutes, { prefix: '/bridge' });
+await app.register(transactionRoutes, { prefix: '/transactions' });
+
+await registerSseBridge(app);
+
+const shutdown = async (signal: string) => {
+  app.log.info({ signal }, 'shutting down');
+  await app.close();
+  process.exit(0);
+};
+process.on('SIGINT', () => shutdown('SIGINT'));
+process.on('SIGTERM', () => shutdown('SIGTERM'));
+
+app.listen({ port: env.API_PORT, host: '0.0.0.0' }, (err, address) => {
+  if (err) {
+    app.log.error(err);
+    process.exit(1);
+  }
+  app.log.info(`StellarDAO API listening at ${address}`);
+});

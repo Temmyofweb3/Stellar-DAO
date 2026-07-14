@@ -1,0 +1,17 @@
+[package]
+name = "wrapper-token"
+version.workspace = true
+edition.workspace = true
+authors.workspace = true
+license.workspace = true
+repository.workspace = true
+description = "StellarDAO wrapper-token — capped-mint/burn ERC-20-style token that the bridge contract is authorised for."
+
+[lib]
+crate-type = ["cdylib"]
+
+[dependencies]
+soroban-sdk = { workspace = true }
+
+[dev-dependencies]
+soroban-sdk = { workspace = true, features = ["testutils"] }

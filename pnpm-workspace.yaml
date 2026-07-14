@@ -1,0 +1,8 @@
+packages:
+  - "apps/*"
+  - "packages/*"
+  - "contracts"
+
+# Use Cargo workspace for rust contracts via turbo pipeline (see turbo.json).
+# pnpm does not manage the Rust sub-workspace directly, but it ignores it
+# because no package.json is present in the contracts root.

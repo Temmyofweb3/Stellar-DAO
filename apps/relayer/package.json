@@ -1,0 +1,37 @@
+{
+  "name": "@stellardao/relayer",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Cross-chain relayer that observes Lock events on Ethereum/Solana/Polygon and submits signed attestations to the bridge contract.",
+  "type": "module",
+  "scripts": {
+    "dev": "tsx watch src/index.ts",
+    "build": "tsc --project tsconfig.json",
+    "start": "node dist/index.js",
+    "lint": "eslint src --ext .ts",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "clean": "rm -rf dist .turbo"
+  },
+  "dependencies": {
+    "@noble/curves": "^1.9.7",
+    "@noble/hashes": "^1.5.0",
+    "@solana/web3.js": "^1.95.3",
+    "@stellar/stellar-sdk": "^12.0.0",
+    "@stellardao/sdk": "workspace:*",
+    "@stellardao/shared": "workspace:*",
+    "@stellardao/soroban-client": "workspace:*",
+    "ethers": "^6.13.3",
+    "pino": "^9.5.0",
+    "pino-pretty": "^11.3.0",
+    "zod": "^3.23.8"
+  },
+  "devDependencies": {
+    "@stellardao/eslint-config": "workspace:*",
+    "@stellardao/tsconfig": "workspace:*",
+    "@types/node": "^20.14.10",
+    "tsx": "^4.19.0",
+    "typescript": "^5.6.3",
+    "vitest": "^2.1.4"
+  }
+}
