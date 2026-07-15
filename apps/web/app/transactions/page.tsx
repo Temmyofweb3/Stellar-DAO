@@ -1,5 +1,4 @@
 import type { Metadata } from 'next';
-
 import { isSourceChain } from '@stellardao/shared';
 
 import { ChainFilterChips } from '@/components/dashboard/chain-filter-chips';

@@ -13,7 +13,11 @@ import reactConfig from '../../packages/eslint-config/react.js';
 
 export default [
   {
-    ignores: ['.next/**', 'node_modules/**', 'out/**', 'dist/**'],
+    // `next-env.d.ts` is a Next.js-generated shim (regenerated on every
+    // `next dev` / `next build`). typescript-eslint's strict
+    // `triple-slash-reference` rule treats it as `error`; the canonical
+    // Next.js flat-config guidance is to ignore it.
+    ignores: ['.next/**', 'node_modules/**', 'out/**', 'dist/**', 'next-env.d.ts'],
   },
   ...reactConfig,
 ];
