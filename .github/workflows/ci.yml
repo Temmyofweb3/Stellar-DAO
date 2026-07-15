@@ -57,23 +57,11 @@ jobs:
       - name: Test
         run: pnpm test
 
-      # Soroban contracts are pinned to `soroban-sdk = =21.7.7` (the
-      # most recent 21.x release that matches the pre-22 API surface
-      # the contract source uses). The `testutils` feature is
-      # intentionally NOT enabled in any contract's [dev-dependencies]
-      # because `soroban-env-host` 21.2.1 has an unfixable E0277 in
-      # its `with_test_prng` helper (testutils' `ed25519-dalek` 3.0.0
-      # re-exports a `CryptoRng` from `rand_core` 0.10.x, incompatible
-      # with the one `ChaCha20Rng` implements). The contracts' in-process
-      # unit tests were removed; integration tests against a deployed
-      # Soroban host will replace them in a follow-up. See
-      # `contracts/Cargo.toml` for the full rationale. The three crates
-      # below are gating CI:
-      #   cargo check enforces the SDK absorbs the source unchanged
-      #   cargo test --no-run compiles the (now-empty) test surface
-      #     without triggering the testutils path
-      #   cargo build --target wasm32-unknown-unknown --release
-      #     enforces the WASM artefact ships from current source
+      # Soroban contracts pinned to soroban-sdk =21.7.7. Contract
+      # dev-deps do NOT enable the `testutils` feature — see
+      # docs/soroban-testutils-issue.md for the E0277 rationale and
+      # the test-removal reasoning. The three cargo steps below
+      # gate CI:
       - name: Cargo check (Soroban contracts)
         working-directory: contracts
         run: cargo check --workspace --lib --bins

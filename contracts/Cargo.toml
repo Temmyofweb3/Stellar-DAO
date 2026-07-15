@@ -14,31 +14,11 @@ license = "MIT"
 repository = "https://github.com/stellardao/stellardao"
 
 [workspace.dependencies]
-# Pin to `soroban-sdk` 21.7.7 — the most recent 21.x release, which
-# matches the pre-22 API surface the contract source uses
-# (`IntoVal` trait, single-arg `authorize_as_current_contract`,
-# `BytesN<32>` from crypto returns, `Vec::new(&env)` host-managed
-# allocation, `InvokerContractAuthEntry::Contract` struct literal,
-# `BridgeClient` macro, `env.invoke_contract::<()>(...)`). We pin to
-# `=21.7.7` (exact, not caret) because any 22.x bump would trigger
-# ~22 compile errors against the pre-22 API surface.
-#
-# IMPORTANT: the contracts' `testutils` feature is intentionally
-# NOT enabled in any contract's [dev-dependencies] (see each
-# contract's `Cargo.toml`). `soroban-env-host` 21.2.1 (transitive of
-# `soroban-sdk` 21.7.7) has an unfixable E0277 in its
-# `with_test_prng` helper: the testutils' `ed25519-dalek` 3.0.0
-# re-exports a `CryptoRng` from `rand_core` 0.10.x, incompatible
-# with the `CryptoRng` impl on `ChaCha20Rng` (rand_chacha 0.3.1,
-# rand_core 0.6.4). The fix is non-trivial: every other 21.x SDK
-# we tried (21.1.0-21.5.0) is either yanked or fails with a
-# different E0512 transmute error, and `[patch.crates-io]` version
-# overrides are rejected by Cargo (must point to a different
-# source). As a result, the contracts' in-process unit tests
-# (which relied on `Env::default()`, `Address::generate`,
-# `env.mock_all_auths`, `env.register_contract`) are removed.
-# Integration tests against a deployed Soroban host will replace
-# these in a follow-up — see the workflow comment below.
+# Pin soroban-sdk to =21.7.7 (matches the pre-22 API surface the
+# contract source uses). The `testutils` feature is intentionally
+# NOT enabled on contract dev-deps — see
+# docs/soroban-testutils-issue.md for the E0277 rationale and the
+# test-removal reasoning.
 soroban-sdk = { version = "=21.7.7", features = ["alloc"] }
 
 [profile.release]
