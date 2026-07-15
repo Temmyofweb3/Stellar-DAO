@@ -41,17 +41,13 @@ declare module 'fastify' {
 export const createServer = async (opts: ServerOptions = {}): Promise<FastifyInstance> => {
   const app = Fastify({
     logger: opts.logger ?? false,
-    // FSTDEP023: top-level `disableRequestLogging` is deprecated in
-    // favour of `logController.disableRequestLogging` in fastify@6.
-    // fastify@5.1's `LogController` interface is strict (a partial
-    // object fails TS2769 — all 12 properties are required), so
-    // stubbing isn't free. The warning is forward-looking (no
-    // runtime breakage in fastify@5); we keep the deprecated
-    // top-level form until the project upgrades to fastify@6,
-    // at which point the upstream-recommended path opens up. Tests
-    // pass through silently because the worker suppresses stderr
-    // and the deprecation does NOT pollute test output.
-    disableRequestLogging: !opts.logger,
+    // FSTDEP023: top-level `disableRequestLogging` removed for
+    // fastify@6 forward-compat. Verified: with `logger: false` and
+    // 89/89 `@stellardao/api` tests passing, per-request log lines
+    // stay silent via pino's full opt-out — no separate toggle is
+    // needed. If a future regression surfaces request lines in test
+    // stderr, reintroduce a granular toggle via
+    // `logController.disableRequestLogging`.
   });
 
   await app.register(sensible);
