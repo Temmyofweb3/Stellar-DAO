@@ -76,3 +76,20 @@ jobs:
 
       - name: Build (Node bundles)
         run: pnpm build
+
+      # Advisory security audits. Non-gating (`continue-on-error:
+      # true`) — these intentionally never block CI but surface
+      # known CVEs in the dependency graph so reviewers notice them
+      # when they touch the lockfile. The cargo-audit install is
+      # cached by Swatinem/rust-cache@v2 via the workspace lockfile
+      # so subsequent runs are sub-second.
+      - name: Audit Rust dependencies (advisory)
+        continue-on-error: true
+        working-directory: contracts
+        run: |
+          cargo install cargo-audit --locked
+          cargo audit
+
+      - name: Audit Node dependencies (advisory)
+        continue-on-error: true
+        run: pnpm audit --prod
