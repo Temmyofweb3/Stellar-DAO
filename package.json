@@ -21,7 +21,9 @@
     "contracts:build": "pnpm --filter @stellardao/contracts build",
     "contracts:test": "pnpm --filter @stellardao/contracts test",
     "contracts:deploy": "pnpm tsx scripts/deploy.ts",
-    "bindings:generate": "pnpm tsx scripts/generate-bindings.ts"
+    "bindings:generate": "pnpm tsx scripts/generate-bindings.ts",
+    "changelog": "bash scripts/generate-changelog.sh",
+    "changelog:check": "bash scripts/generate-changelog.sh --check"
   },
   "devDependencies": {
     "@types/node": "^20.14.10",

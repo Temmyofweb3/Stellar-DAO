@@ -102,3 +102,15 @@ jobs:
       - name: Audit Node dependencies (advisory)
         continue-on-error: true
         run: npm audit --omit=dev --json
+
+      # Advisory: re-renders CHANGELOG.md from the last 50 commits
+      # and complains to the action log when the file on disk is
+      # stale. Non-gating — the `continue-on-error` means reviewers
+      # see the diff in the Actions tab but the job still passes.
+      # Refresh locally with `pnpm changelog` and commit the result.
+      - name: Refresh CHANGELOG (advisory)
+        continue-on-error: true
+        run: |
+          if [ -x scripts/generate-changelog.sh ]; then
+            bash scripts/generate-changelog.sh --check || true
+          fi
