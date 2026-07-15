@@ -122,34 +122,3 @@ pub fn verify_threshold(
 
     Err(AttestationError::InsufficientSignatures)
 }
-
-#[cfg(test)]
-mod tests {
-    use super::*;
-
-    /// Smoke test: with an empty attestations list, we never reach the
-    /// threshold. The previous scaffold returned `false` here and panics
-    /// transformed that into `InsufficientSignatures`; the production
-    /// verifier preserves the same overall behaviour from the bridge's
-    /// point of view, but with a path-correct host-call rather than a
-    /// stub body. A full multi-sig happy-path test requires an external
-    /// secp256k1 signer (e.g. `k256` or `secp256k1` crate) — that's an
-    /// integration test rather than a unit test, see
-    /// [`super::super::test::mint_rejects_replay_of_nonce`] for the
-    /// close-to-real assertion today.
-    #[test]
-    fn empty_attestations_do_not_meet_threshold() {
-        let env = Env::default();
-        // `Vec::new` on soroban-sdk 21.x requires the host env to
-        // allocate the host-managed buffer — the previous `Vec::new()`
-        // here compiled against a pre-21 SDK where the type carried its
-        // own inline storage. The `#[cfg(test)] feature = "testutils"`
-        // dev-dep pulls in the same 21.x Vec, so the env arg is required
-        // here.
-        let operators: Vec<BytesN<32>> = Vec::new(&env);
-        let digest = BytesN::from_array(&env, &[0u8; 32]);
-        let attestations: Vec<(BytesN<32>, BytesN<64>)> = Vec::new(&env);
-        let result = verify_threshold(&env, &operators, 1, &digest, &attestations);
-        assert!(matches!(result, Err(AttestationError::InsufficientSignatures)));
-    }
-}

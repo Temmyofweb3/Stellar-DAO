@@ -14,4 +14,10 @@ crate-type = ["cdylib"]
 soroban-sdk = { workspace = true }
 
 [dev-dependencies]
-soroban-sdk = { workspace = true, features = ["testutils"] }
+# The `testutils` feature is intentionally NOT enabled here — see
+# the long comment in the workspace Cargo.toml for why the in-process
+# unit tests were removed (E0277 in `soroban-env-host` 21.2.1's
+# `with_test_prng` helper, unfixable within the 21.x line without
+# modifying the Cargo registry). Integration tests against a
+# deployed Soroban host will replace these in a follow-up.
+soroban-sdk = { workspace = true }
