@@ -77,7 +77,7 @@ export const governanceRoutes = async (app: FastifyInstance): Promise<void> => {
 
       return reply.send({
         proposals,
-        cursor: proposals.length > 0 ? proposals[proposals.length - 1].id : null,
+        cursor: proposals.length > 0 ? proposals[proposals.length - 1]?.id ?? null : null,
       });
     },
   );

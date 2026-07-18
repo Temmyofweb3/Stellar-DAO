@@ -49,7 +49,7 @@ export async function rateLimitPlugin(app: FastifyInstance): Promise<void> {
   const cleanup = setInterval(() => {
     const now = Date.now();
     for (const key of Object.keys(store)) {
-      if (store[key].resetAt < now) {
+      if (store[key]?.resetAt && store[key].resetAt < now) {
         delete store[key];
       }
     }
