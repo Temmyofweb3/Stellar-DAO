@@ -29,6 +29,7 @@ import { analyticsRoutes } from './routes/analytics.js';
 import { registerSseBridge } from './sse/horizon-bridge.js';
 import { rateLimitPlugin } from './middleware/rate-limit.js';
 import { apiKeyAuthPlugin } from './middleware/api-key-auth.js';
+import { sanitizePlugin } from './middleware/sanitize.js';
 
 export type ServerOptions = {
   logger?: boolean;
@@ -87,6 +88,7 @@ app.decorate(
 
   await app.register(rateLimitPlugin);
   await app.register(apiKeyAuthPlugin);
+  await app.register(sanitizePlugin);
 
   await app.register(healthRoutes, { prefix: '/health' });
   await app.register(assetRoutes, { prefix: '/assets' });
