@@ -6,12 +6,15 @@ import { usePathname } from 'next/navigation';
 import { WalletConnect } from './wallet-connect';
 
 import { LogoMark } from '@/components/atoms/logo-mark';
+import { ThemeToggle } from '@/components/theme-toggle';
 
 const navItems = [
   { href: '/', label: 'Overview' },
   { href: '/wrap', label: 'Wrap' },
   { href: '/assets', label: 'Assets' },
   { href: '/transactions', label: 'Transactions' },
+  { href: '/governance', label: 'Governance' },
+  { href: '/analytics', label: 'Analytics' },
 ];
 
 export const TopNav = () => {
@@ -43,6 +46,7 @@ export const TopNav = () => {
           })}
         </nav>
         <div className="flex items-center gap-3">
+          <ThemeToggle />
           <WalletConnect />
         </div>
       </div>

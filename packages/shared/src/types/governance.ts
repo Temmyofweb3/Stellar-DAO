@@ -79,7 +79,7 @@ export interface ProtocolAnalytics {
 export interface SystemHealth {
   status: 'ok' | 'degraded' | 'down';
   uptime: number;
-  memory: NodeJS.MemoryUsage;
+  memory: { heapUsed: number; heapTotal: number; rss: number };
   timestamp: string;
   checks: Record<string, 'ok' | 'degraded' | 'down' | 'unknown'>;
 }

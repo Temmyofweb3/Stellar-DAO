@@ -18,8 +18,8 @@ export const WalletConnect = () => {
   const connect = async () => {
     setBusy(true);
     try {
-      const key = await WalletConnector.connect();
-      setPubKey(key);
+      const result = await WalletConnector.connect();
+      setPubKey(result.pubKey);
     } finally {
       setBusy(false);
     }
