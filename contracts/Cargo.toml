@@ -4,6 +4,9 @@ members = [
     "bridge",
     "factory",
     "wrapper-token",
+    "governance-token",
+    "governance",
+    "timelock",
 ]
 
 [workspace.package]
