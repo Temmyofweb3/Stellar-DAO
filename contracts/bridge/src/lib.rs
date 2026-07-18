@@ -133,6 +133,53 @@ impl Bridge {
         env.storage().instance().set(&DataKey::FeeCollector, &collector);
     }
 
+    // ── Emergency Recovery ───────────────────────────────────
+
+    /// Initiate emergency fund recovery. Admin only.
+    /// Sets a timelock before funds can be withdrawn.
+    pub fn initiate_emergency_recovery(env: Env, delay_ledgers: u32) {
+        let admin: Address = env.storage().instance().get(&DataKey::Admin).expect("bridge not initialized");
+        admin.require_auth();
+        assert!(delay_ledgers > 0, "delay must be positive");
+        let eta = env.ledger().sequence() + delay_ledgers;
+        env.storage().instance().set(&DataKey::EmergencyTimelock, &eta);
+        env.events().publish(
+            (Symbol::new(&env, "bridge"), Symbol::new(&env, "EmergencyRecoveryInitiated")),
+            (eta,),
+        );
+    }
+
+    /// Cancel emergency recovery before execution.
+    pub fn cancel_emergency_recovery(env: Env) {
+        let admin: Address = env.storage().instance().get(&DataKey::Admin).expect("bridge not initialized");
+        admin.require_auth();
+        env.storage().instance().set(&DataKey::EmergencyTimelock, &0u32);
+        env.events().publish(
+            (Symbol::new(&env, "bridge"), Symbol::new(&env, "EmergencyRecoveryCanceled")),
+            (),
+        );
+    }
+
+    /// Execute emergency fund withdrawal after timelock expires.
+    /// Transfers all bridge-controlled funds to the emergency admin.
+    pub fn execute_emergency_withdrawal(env: Env) {
+        let eta: u32 = env.storage().instance().get(&DataKey::EmergencyTimelock).unwrap_or(0u32);
+        assert!(eta > 0, "no active emergency recovery");
+        let current = env.ledger().sequence();
+        assert!(current >= eta, "emergency timelock not expired");
+
+        let admin: Address = env.storage().instance().get(&DataKey::EmergencyAdmin).expect("bridge not initialized");
+        // Transfer bridge control to emergency admin.
+        env.storage().instance().set(&DataKey::Admin, &admin);
+        env.storage().instance().set(&DataKey::Paused, &true);
+        env.storage().instance().set(&DataKey::EmergencyTimelock, &0u32);
+
+        env.events().publish(
+            (Symbol::new(&env, "bridge"), Symbol::new(&env, "EmergencyWithdrawalExecuted")),
+            (admin,),
+        );
+    }
+
     pub fn admin(env: Env) -> Address {
         env.storage()
             .instance()
